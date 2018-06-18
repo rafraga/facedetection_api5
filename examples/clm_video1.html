@@ -102,29 +102,6 @@
 			</div>
 			<br/>
 			<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
-			<div id="text">
-				<p>This is an example of face tracking using the javascript library <a href="https://github.com/auduno/clmtrackr"><em>clmtrackr</em></a>. The fitting method is generally called "Non-rigid/deformable face tracking/alignment using constrained local models".</p>
-				<p>Note that this example works best in Google Chrome, with a computer that supports WebGL and floating point textures. It should however work in any modern browser.</p>
-				<div id="gum" class="gum">
-					<p>To try it out:
-						<ol>
-							<li>allow the page to use your webcamera</li>
-							<li>make sure that your face is clearly visible in the video, and click start</li>
-							<li>see the model fitted to your face</li>
-						<ol>
-					</p>
-				</div>
-				<div id="nogum" class="nogum">
-					<p>
-						There was some problem trying to capture your webcamera, please check that your browser supports WebRTC. Using a fallback video instead. To try it out:
-						<ol>
-							<li>click start</li>
-							<li>see the model fitted to the face</li>
-						</ol>
-					</p>
-				</div>
-			</div>
-			<a href="https://github.com/auduno/clmtrackr"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_green_007200.png" alt="Fork me on GitHub"></a>
 			<script>
 				var vid = document.getElementById('videoel');
 				var vid_width = vid.width;
@@ -141,17 +118,13 @@
 				}
 
 				var insertAltVideo = function(video) {
-					// insert alternate video if getUserMedia not available
-					if (supports_video()) {
-						if (supports_webm_video()) {
-							video.src = "./media/cap12_edit.webm";
-						} else if (supports_h264_baseline_video()) {
-							video.src = "./media/cap12_edit.mp4";
+					if (supports_h264_baseline_video()) {
+							//video.src = "https://salty-plains-52394.herokuapp.com/media/video2.mp4";
+							video.src = "./media/video2.mp4";
 						} else {
 							return false;
+							alert("Your browser doesn't support h264");
 						}
-						return true;
-					} else return false;
 				}
 
 				function adjustVideoProportions() {
@@ -195,17 +168,12 @@
 				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 				window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
-				// set up video
-				if (navigator.mediaDevices) {
-					navigator.mediaDevices.getUserMedia({video : true}).then(gumSuccess).catch(gumFail);
-				} else if (navigator.getUserMedia) {
-					navigator.getUserMedia({video : true}, gumSuccess, gumFail);
-				} else {
-					insertAltVideo(vid);
-					document.getElementById('gum').className = "hide";
-					document.getElementById('nogum').className = "nohide";
-					alert("Your browser does not seem to support getUserMedia, using a fallback video instead.");
-				}
+
+				insertAltVideo(vid);
+				document.getElementById('gum').className = "hide";
+				document.getElementById('nogum').className = "nohide";
+				//alert("");
+
 
 				vid.addEventListener('canplay', enablestart, false);
 
@@ -231,6 +199,13 @@
 					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
 					if (ctrack.getCurrentPosition()) {
 						ctrack.draw(overlay);
+						print_info = []
+						print_info.push("score :" + ctrack.getScore().toFixed(4));
+						print_info.push("current position :" + ctrack.getCurrentPosition());
+						print_info.push("parameters :" + ctrack.getCurrentParameters());
+						print_info.push("convergence :" + ctrack.getConvergence());
+						console.log(print_info);
+						//console.log(JSON.stringify(ctrack));
 					}
 				}
 
@@ -240,6 +215,7 @@
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
 				document.getElementById('container').appendChild( stats.domElement );
+				
 
 				// update stats on every iteration
 				document.addEventListener('clmtrackrIteration', function(event) {
