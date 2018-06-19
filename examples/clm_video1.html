@@ -102,6 +102,12 @@
 			</div>
 			<br/>
 			<input class="btn" type="button" value="wait, loading video" disabled="disabled" onclick="startVideo()" id="startbutton"></input>
+			<div id="text">
+				<div id="gum" class="gum">
+				</div>
+				<div id="nogum" class="nogum">
+				</div>
+			</div>
 			<script>
 				var vid = document.getElementById('videoel');
 				var vid_width = vid.width;
@@ -118,13 +124,15 @@
 				}
 
 				var insertAltVideo = function(video) {
-					if (supports_h264_baseline_video()) {
-							//video.src = "https://salty-plains-52394.herokuapp.com/media/video2.mp4";
+					// insert alternate video if getUserMedia not available
+					if (supports_video()) {
+						if (supports_h264_baseline_video()) {
 							video.src = "./media/video2.mp4";
 						} else {
+							alert("Your browser does not accept h264");
 							return false;
-							alert("Your browser doesn't support h264");
 						}
+					}
 				}
 
 				function adjustVideoProportions() {
@@ -168,12 +176,10 @@
 				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 				window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
-
+				
 				insertAltVideo(vid);
 				document.getElementById('gum').className = "hide";
 				document.getElementById('nogum').className = "nohide";
-				//alert("");
-
 
 				vid.addEventListener('canplay', enablestart, false);
 
@@ -199,13 +205,6 @@
 					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
 					if (ctrack.getCurrentPosition()) {
 						ctrack.draw(overlay);
-						print_info = []
-						print_info.push("score :" + ctrack.getScore().toFixed(4));
-						print_info.push("current position :" + ctrack.getCurrentPosition());
-						print_info.push("parameters :" + ctrack.getCurrentParameters());
-						print_info.push("convergence :" + ctrack.getConvergence());
-						console.log(print_info);
-						//console.log(JSON.stringify(ctrack));
 					}
 				}
 
@@ -215,7 +214,6 @@
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
 				document.getElementById('container').appendChild( stats.domElement );
-				
 
 				// update stats on every iteration
 				document.addEventListener('clmtrackrIteration', function(event) {
