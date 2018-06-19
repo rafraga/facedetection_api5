@@ -205,6 +205,12 @@
 					//psrElement.innerHTML = "score :" + ctrack.getScore().toFixed(4);
 					if (ctrack.getCurrentPosition()) {
 						ctrack.draw(overlay);
+						print_info = []
+						print_info.push("score :" + ctrack.getScore().toFixed(4));
+						print_info.push("current position :" + ctrack.getCurrentPosition());
+						print_info.push("parameters :" + ctrack.getCurrentParameters());
+						print_info.push("convergence :" + ctrack.getConvergence());
+						console.log(print_info);
 					}
 				}
 
