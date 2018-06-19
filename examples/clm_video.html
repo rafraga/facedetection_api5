@@ -143,15 +143,13 @@
 				var insertAltVideo = function(video) {
 					// insert alternate video if getUserMedia not available
 					if (supports_video()) {
-						if (supports_webm_video()) {
-							video.src = "./media/cap12_edit.webm";
-						} else if (supports_h264_baseline_video()) {
+						if (supports_h264_baseline_video()) {
 							video.src = "./media/cap12_edit.mp4";
 						} else {
+							alert("Your browser does not accept h264");
 							return false;
 						}
-						return true;
-					} else return false;
+					}
 				}
 
 				function adjustVideoProportions() {
@@ -195,17 +193,12 @@
 				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 				window.URL = window.URL || window.webkitURL || window.msURL || window.mozURL;
 
-				// set up video
-				if (navigator.mediaDevices) {
-					navigator.mediaDevices.getUserMedia({video : true}).then(gumSuccess).catch(gumFail);
-				} else if (navigator.getUserMedia) {
-					navigator.getUserMedia({video : true}, gumSuccess, gumFail);
-				} else {
-					insertAltVideo(vid);
-					document.getElementById('gum').className = "hide";
-					document.getElementById('nogum').className = "nohide";
-					alert("Your browser does not seem to support getUserMedia, using a fallback video instead.");
-				}
+				
+				insertAltVideo(vid);
+				document.getElementById('gum').className = "hide";
+				document.getElementById('nogum').className = "nohide";
+				alert("Your browser does not seem to support getUserMedia, using a fallback video instead.");
+			
 
 				vid.addEventListener('canplay', enablestart, false);
 
